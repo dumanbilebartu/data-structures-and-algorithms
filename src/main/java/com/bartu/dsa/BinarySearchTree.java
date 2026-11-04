@@ -2,23 +2,23 @@ package com.bartu.dsa;
 
 public class BinarySearchTree<T extends Comparable<? super T>> {
 
-    private static class BinaryNode<T>{
-        T element;
+    private static class BinaryNode<T>{ //Fundamental structure for BST
+        T element; //Data
         BinaryNode<T> left;
         BinaryNode<T> right;
 
-        BinaryNode(T element){
+        BinaryNode(T element){ //Root Creation
             this(element,null,null);
         }
-        BinaryNode(T theElement , BinaryNode<T> lt , BinaryNode<T> rt ){
+        BinaryNode(T theElement , BinaryNode<T> lt , BinaryNode<T> rt ){ //Leaf creation
             element = theElement;
             left = lt;
             right = rt;
         }
     }
-    private BinaryNode<T> root;
+    private BinaryNode<T> root; //Basis node
     public BinarySearchTree(){
-        root = null;
+        root = null; //Create tree
     }
     public void makeEmpty(){
         root = null;
@@ -26,73 +26,73 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
     public boolean isEmpty(){
         return root == null;
     }
-    private boolean contains(T t,BinaryNode<T> node){
+    private boolean contains(T t,BinaryNode<T> node){ //Has a node.element or not
         if(node == null){ return false; }
 
-        int compareResult = t.compareTo(node.element);
+        int compareResult = t.compareTo(node.element); //compare data
 
-        if(compareResult < 0){
+        if(compareResult < 0){ // sought-after data is less than node.element
             return contains(t,node.left);
-        }else if(compareResult > 0){
+        }else if(compareResult > 0){ // sought-after data is greater than node.element
             return contains(t,node.right);
         }else{
             return true;
         }
     }
-    public boolean contains( T t){
+    public boolean contains( T t){ //Encapsulation contains
         return contains(t, root );
     }
-    private BinaryNode<T> findMin(BinaryNode<T> t){
+    private BinaryNode<T> findMin(BinaryNode<T> t){ //Find min value of subtree
         if(t == null){
              return null;
         }
         if(t.left == null){
             return t;
         } else {
-           return findMin(t.left);
+           return findMin(t.left); // go leftest leaf
         }
     }
     private BinaryNode<T> findMax(BinaryNode<T> t){
       if(t != null){
           while(t.right != null){
-              t = t.right;
+              t = t.right; // go rightest leaf
           }
       }
       return t;
     }
-    public T findMax(){
+    public T findMax(){ //Encapsulation findMax
         if(isEmpty()){
             throw new RuntimeException();
         }
         return findMax(root).element;
     }
-    public T findMin(){
+    public T findMin(){ //Encapsulation findMin
         if(isEmpty()){
             throw new RuntimeException();
         }
         return findMin(root).element;
     }
-    private BinaryNode<T> insert(T t , BinaryNode<T> node){
-        if(node == null){
+    private BinaryNode<T> insert(T t , BinaryNode<T> node){ //insertion of the new node
+        if(node == null){ // create BST
             return new BinaryNode<T>(t,null,null);
         }
 
         int compareResult = t.compareTo(node.element);
 
         if(compareResult < 0){
-            node.left = insert(t , node.left);
+            node.left = insert(t , node.left); //recursion
         }else if(compareResult > 0){
-            node.right = insert(t , node.right);
+            node.right = insert(t , node.right); //recursion
         }else{
             //Duplicates are prohibited
         }
 
         return node;
     }
-    public void insert(T t){
+    public void insert(T t){ //Encapsulation insert
         root = insert(t,root);
     }
-    private BinaryNode<T> remove(T t,BinaryNode<T> node){
+    private BinaryNode<T> remove(T t,BinaryNode<T> node){ // removal process
         if(node == null){
             return null;
         }
@@ -103,7 +103,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
             node.left = remove(t, node.left);
         }else if(compareResult > 0){
             node.right = remove(t, node.right);
-        }else if(node.left != null && node.right != null) {
+        }else if(node.left != null && node.right != null) { // node has two children
             /* less efficient way when leaf has a two children
             node.element = findMax(node.right).element;
             node.left = remove(node.element,node.left);
@@ -123,7 +123,7 @@ public class BinarySearchTree<T extends Comparable<? super T>> {
                     prev.left = tmp.right; //old copy deletion
                 }
         }else{
-            node = (node.left != null) ? node.left : node.right;
+            node = (node.left != null) ? node.left : node.right; //node has one child
         }
         return node;
     }
