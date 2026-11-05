@@ -1,5 +1,7 @@
 package com.bartu.dsa;
 
+import java.lang.reflect.AccessibleObject;
+
 public class AdelsonVelskiiLandisTree<T extends Comparable<? super T>> {
     private static class AvlNode<T>{
         T element;
@@ -65,5 +67,69 @@ public class AdelsonVelskiiLandisTree<T extends Comparable<? super T>> {
         }
         node.height = Math.max(height(node.left),height(node.right))+1;
         return node;
+    }
+    private AvlNode<T> findMin(AvlNode<T> node){
+        if(node == null){
+            return null;
+        }
+        if(node.left == null){
+            return node;
+        }
+        return findMin(node.left);
+    }
+    private AvlNode<T> findMax(AvlNode<T> node){
+        if(node == null){
+            return null;
+        }
+        if(node.right == null){
+            return node;
+        }
+        return findMax(node.right);
+    }
+    public T findMin(T t){
+        if(isEmpty()){
+            throw new RuntimeException();
+        }
+        return findMin(root).element;
+    }
+    public T findMax(T t){
+        if(isEmpty()){
+            throw new RuntimeException();
+        }
+        return findMax(root).element;
+    }
+    private AvlNode<T> insert(T t,AvlNode<T> node){
+        if(node == null){
+            return new AvlNode<T>(t,null,null);
+        }
+
+        int compareResult = t.compareTo(node.element);
+
+        if(compareResult < 0){
+            node.left = insert(t,node.left);
+        }else if(compareResult > 0){
+            node.right = insert(t,node.right);
+        }else{
+            //Duplicates are prohibited.
+        }
+        return balance(node);
+    }
+    private AvlNode<T> remove(T t, AvlNode<T> node){
+        if(node == null){
+            return node;
+        }
+        int compareResult = t.compareTo(node.element);
+
+        if(compareResult < 0){
+            node.left = remove(t,node.left);
+        }else if(compareResult > 0){
+            node.right = remove(t,node.right);
+        }else if(node.left != null && node.right != null) {
+            node.element = findMin(node.right).element;
+            node.right = remove(node.element,node.right);
+        }else{
+            node = (node.left != null) ? node.left : node.right;
+        }
+        return balance(node);
     }
     }
